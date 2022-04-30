@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceShemaLocation="OpenSccenario.xsd">
+  <FileHeader author="Violin Wang" date="2022-04-5T16:00:00" decription="aggressive merge" revMajor="1" revMinor="0"/>
+  <ParameterDeclarations>
+    <ParameterDeclaration name="HostVehicle" parameterType="string" value="car_white"/>
+    <ParameterDeclaration name="TrafficVehicle" parameterType="string" value="car_yellow"/>
+    <ParameterDeclaration name="TargetVehicle" parameterType="string" value="car_red"/>
+    <ParameterDeclaration name="CatalogPath" parameterType="string" value="resources/xosc/Catalogs/Vehicles"
+                          relativePath="true"/>
+    <ParameterDeclaration name="RoadNetworkPath" parameterType="string" value="resources/xodr/merge.xodr"
+                          relativePath="true"/>
+    <ParameterDeclaration name="SumoInputPath" parameterType="string" value="resources/sumo_inputs/merge.sumocfg"
+                          relativePath="true"/>
+    <!-- Parameters -->
+    <ParameterDeclaration name="EgoSpeed" parameterType="double" value="10" min="2" max="10" adjustable="false"/>
+    <ParameterDeclaration name="EgoStartS" parameterType="double" value="5" min="5" max="20" adjustable="false"/>
+    <ParameterDeclaration name="EgoStartT" parameterType="double" value="1" min="-1" max="1" adjustable="true"/>
+  </ParameterDeclarations>
+  <CatalogLocations>
+    <VehicleCatalog>
+      <Directory path="$CatalogPath"/>
+    </VehicleCatalog>
+    <!-- <ControllerCatalog>
+        <Directory path="../xosc/Catalogs/Controllers" />
+    </ControllerCatalog> -->
+  </CatalogLocations>
+  <RoadNetwork>
+    <LogicFile filepath="$RoadNetworkPath"/>
+  </RoadNetwork>
+  <Entities>
+    <ScenarioObject name="Ego">
+      <CatalogReference catalogName="VehicleCatalog" entryName="$HostVehicle"/>
+      <ObjectController>
+        <Controller name="IDMController">
+          <Properties>
+            <Property name="esminiController" value="ExternalController"/>
+            <Property name="baseController" value="Naive"/>
+          </Properties>
+        </Controller>
+      </ObjectController>
+      <ObjectSensor>
+        <Sensor name="IdealSensor">
+          <Properties>
+            <Property name="sensorType" value="IdealSensor" x="2" y="0" z="1" h="0" rangeNear="0" rangeFar="100"
+                      fovH="0.2618" maxObj="5"/>
+          </Properties>
+        </Sensor>
+        <Sensor name="LaneSensor">
+          <Properties>
+            <Property name="sensorType" value="LaneSensor" lookaheadDistance="5" lookaheadMode="0"/>
+          </Properties>
+        </Sensor>
+        <Sensor name="RoadSensor">
+          <Properties>
+            <Property name="sensorType" value="RoadSensor"/>
+          </Properties>
+        </Sensor>
+      </ObjectSensor>
+    </ScenarioObject>
+    <ScenarioObject name="Bumper">
+      <CatalogReference catalogName="VehicleCatalog" entryName="$TargetVehicle"/>
+      <ObjectController>
+        <Controller name="External">
+          <Properties>
+            <Property name="esminiController" value="ExternalController"/>
+            <Property name="baseController" value="Naive"/>
+          </Properties>
+        </Controller>
+      </ObjectController>
+      <ObjectSensor>
+        <Sensor name="RoadSensor">
+          <Properties>
+            <Property name="sensorType" value="RoadSensor"/>
+          </Properties>
+        </Sensor>
+      </ObjectSensor>
+    </ScenarioObject>
+  </Entities>
+  <Storyboard>
+    <Init>
+      <Actions>
+        <Private entityRef="Ego">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition laneId="-1" offset="$EgoStartT" roadId="41" s="$EgoStartS"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <ActivateControllerAction longitudinal="true" lateral="true"/>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsDimension="time" dynamicsShape="step" value="1"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$EgoSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="Bumper">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition laneId="-1" offset="0" roadId="40" s="20"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <ActivateControllerAction longitudinal="true" lateral="true"/>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsDimension="time" dynamicsShape="step" value="1"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="0"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    <Story name="mystory">
+      <ParameterDeclarations/>
+      <Act/>
+    </Story>
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition conditionEdge="rising" delay="0" name="stop_simulation">
+          <ByValueCondition>
+            <SimulationTimeCondition rule="greaterThan" value="1000"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>
