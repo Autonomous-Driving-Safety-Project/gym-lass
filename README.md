@@ -4,7 +4,7 @@
 
 1. 安装Boost >= 1.71.0
 
-2. 安装cmake
+2. 安装cmake >= 3.16
 
 3. 下载
 ```shell
@@ -33,5 +33,3 @@ pip install -e .
 cd gym_lass/test
 python test.py
 ```
-
-> 注: 此处尚且存在问题, 参见LASS/#1. 该问题只在开启可视化时出现, 不影响训练
