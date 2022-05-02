@@ -13,7 +13,6 @@ cd gym-lass
 git submodule init
 git submodule update
 ```
-注意, 由于LASS子模块采用SSH访问方式, 请提前配置SSH密钥, 或手动修改`.gitmodules`中的url
 
 4. 编译LASS
 ```shell
@@ -31,7 +30,7 @@ pip install -e .
 
 6. 测试
 ```shell
-cd gym_lass/envs
+cd gym_lass/test
 python test.py
 ```
 
