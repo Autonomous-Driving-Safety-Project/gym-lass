@@ -1,9 +1,7 @@
 # Lane Keeping System based on PID
 # @author: Violin
 # @Date: 2022-04-22
-import math
-import operator
-from gym_lass.algos.algorithm import Algorithm
+from .algorithm import Algorithm
 from gym_lass.utils.utils import Utils
 
 

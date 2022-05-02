@@ -2,18 +2,17 @@ import os
 import numpy as np
 import gym
 from gym import spaces
-import gym_lass.lass.bin.Lass as Lass
+import gym_lass.lass as Lass
 from gym_lass.utils.utils import Utils
-from gym_lass.algos.idm import IDM
-from gym_lass.algos.lks_pid import LKS_PID
-from gym_lass.vehicles.category import CarIDM, CarNaive
+from gym_lass.algos import IDM, LKS_PID
+from gym_lass.vehicles import CarIDM, CarNaive
 
 
 class HighwayOvertake_v0(gym.Env):
     """Highway overtake scenario based on esmini"""
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, display=False):
+    def __init__(self, display=False, enable_random=False):
         super(HighwayOvertake_v0, self).__init__()
         # Define action and observation space
         self.__lass = None
@@ -23,6 +22,7 @@ class HighwayOvertake_v0(gym.Env):
                                             dtype=np.float32)
         self.__xosc_path = os.path.join(Utils.ROOT_PATH, 'resources/xosc/highway_overtake.xosc')
         self.__display = display
+        self.__random = enable_random
         self.__vdict = None
         self.__ego = None
         self.__bumper = None
@@ -34,11 +34,13 @@ class HighwayOvertake_v0(gym.Env):
     def reset(self):
         if self.__lass:
             del self.__lass
-        if self.__display:
+        if self.__display == True:
             display = 1
-        else:
+        elif self.__display == False:
             display = 0
-        self.__lass = Lass.Lass(Utils.load_xosc(self.__xosc_path), display)
+        else:
+            display = self.__display
+        self.__lass = Lass.Lass(Utils.load_xosc(self.__xosc_path, enable_random=self.__random), display)
         self.__vdict = self.__lass.vehicleDict()
         init_state = self.__lass.observe()
 
@@ -48,7 +50,8 @@ class HighwayOvertake_v0(gym.Env):
         self.__ego = CarIDM(ego_id[0], init_state[ego_id[0]], IDM(10, 1, 1.6, 1, 0.2), LKS_PID(0.2, 0, 20))
         self.__bumper = CarNaive(bumper_id[0], init_state[bumper_id[0]])
 
-        return [self.__abstract_state(self.__ego.state), self.__abstract_state(self.__bumper.state)]
+        s = np.array([self.__abstract_state(self.__ego.state), self.__abstract_state(self.__bumper.state)])
+        return s.ravel()
 
     def step(self, action):
         action = np.clip(action, self.action_space.low, self.action_space.high)
@@ -80,7 +83,8 @@ class HighwayOvertake_v0(gym.Env):
         if x_gap > 0:
             reward -= x_gap / 10000
 
-        return [self.__abstract_state(self.__ego.state), self.__abstract_state(self.__bumper.state)], reward, ended, {'t': t}
+        s = np.array([self.__abstract_state(self.__ego.state), self.__abstract_state(self.__bumper.state)])
+        return s.ravel(), reward, ended, {'t': t}
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen

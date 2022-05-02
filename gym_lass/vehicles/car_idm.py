@@ -1,17 +1,5 @@
-import operator
-from gym_lass.algos.idm import IDM
-from gym_lass.algos.lks_pid import LKS_PID
-from gym_lass.vehicles.vehicle import Vehicle
-from gym_lass.utils.utils import Utils
-
-
-class CarNaive(Vehicle):
-    def __init__(self, vehicle_id, init_state):
-        super().__init__(vehicle_id, init_state)
-
-    def get_action(self, sensor_data):
-        raise NotImplementedError("Action should be provided externally for a naive car.")
-
+from .vehicle import Vehicle
+from gym_lass.algos import IDM, LKS_PID
 
 class CarIDM(Vehicle):
     def __init__(self, vehicle_id, init_state, idm_controller: IDM, lateral_controller: LKS_PID):
