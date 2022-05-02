@@ -106,7 +106,7 @@
           <PrivateAction>
             <TeleportAction>
               <Position>
-                <LanePosition laneId="-1" offset="0" roadId="40" s="20"/>
+                <LanePosition laneId="-2" offset="0" roadId="40" s="20"/>
               </Position>
             </TeleportAction>
           </PrivateAction>
