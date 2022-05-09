@@ -13,9 +13,8 @@
     <ParameterDeclaration name="SumoInputPath" parameterType="string" value="resources/sumo_inputs/merge.sumocfg"
                           relativePath="true"/>
     <!-- Parameters -->
-    <ParameterDeclaration name="EgoSpeed" parameterType="double" value="10" min="2" max="10" adjustable="false"/>
-    <ParameterDeclaration name="EgoStartS" parameterType="double" value="5" min="5" max="20" adjustable="false"/>
-    <ParameterDeclaration name="EgoStartT" parameterType="double" value="1" min="-1" max="1" adjustable="true"/>
+    <ParameterDeclaration name="EgoStartS" parameterType="double" value="20" min="5" max="20" adjustable="false"/>
+    <ParameterDeclaration name="EgoStartT" parameterType="double" value="0" min="-1" max="1" adjustable="false"/>
   </ParameterDeclarations>
   <CatalogLocations>
     <VehicleCatalog>
@@ -42,18 +41,8 @@
       <ObjectSensor>
         <Sensor name="IdealSensor">
           <Properties>
-            <Property name="sensorType" value="IdealSensor" x="2" y="0" z="1" h="0" rangeNear="0" rangeFar="100"
-                      fovH="0.2618" maxObj="5"/>
-          </Properties>
-        </Sensor>
-        <Sensor name="LaneSensor">
-          <Properties>
-            <Property name="sensorType" value="LaneSensor" lookaheadDistance="5" lookaheadMode="0"/>
-          </Properties>
-        </Sensor>
-        <Sensor name="RoadSensor">
-          <Properties>
-            <Property name="sensorType" value="RoadSensor"/>
+            <Property name="sensorType" value="IdealSensor" x="2" y="0" z="1" h="0" rangeNear="0" rangeFar="5"
+                      fovH="0.7854" maxObj="1"/>
           </Properties>
         </Sensor>
       </ObjectSensor>
@@ -91,16 +80,6 @@
           <PrivateAction>
             <ActivateControllerAction longitudinal="true" lateral="true"/>
           </PrivateAction>
-          <PrivateAction>
-            <LongitudinalAction>
-              <SpeedAction>
-                <SpeedActionDynamics dynamicsDimension="time" dynamicsShape="step" value="1"/>
-                <SpeedActionTarget>
-                  <AbsoluteTargetSpeed value="$EgoSpeed"/>
-                </SpeedActionTarget>
-              </SpeedAction>
-            </LongitudinalAction>
-          </PrivateAction>
         </Private>
         <Private entityRef="Bumper">
           <PrivateAction>
@@ -130,14 +109,5 @@
       <ParameterDeclarations/>
       <Act/>
     </Story>
-    <StopTrigger>
-      <ConditionGroup>
-        <Condition conditionEdge="rising" delay="0" name="stop_simulation">
-          <ByValueCondition>
-            <SimulationTimeCondition rule="greaterThan" value="1000"/>
-          </ByValueCondition>
-        </Condition>
-      </ConditionGroup>
-    </StopTrigger>
   </Storyboard>
 </OpenSCENARIO>

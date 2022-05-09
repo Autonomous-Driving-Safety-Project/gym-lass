@@ -7,10 +7,10 @@ from gym_lass.utils.utils import Utils
 
 class LKS_PID(Algorithm):
 
-    def __init__(self, Kp, Ki = 0, Kd = 0):
-        self.__p = Kp
-        self.__i = Ki
-        self.__d = Kd
+    def __init__(self, kp, ki = 0, kd = 0):
+        self.__p = kp
+        self.__i = ki
+        self.__d = kd
         self.__u_1 = 0
         self.__err_1 = 0
         self.__err_2 = 0
@@ -23,7 +23,7 @@ class LKS_PID(Algorithm):
     def lateral(self):
         return True
 
-    def step(self, ego_state, perception=None):
+    def step(self, ego_state):
         err = - ego_state.lane_offset
         delta_u = self.__p * (err - self.__err_1) + self.__i * err + self.__d * (err - 2 * self.__err_1 + self.__err_2)
         self.__u_1 += delta_u

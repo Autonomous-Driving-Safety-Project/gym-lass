@@ -25,7 +25,7 @@ class Vehicle:
         self._state = state
 
     @abstractmethod
-    def get_action(self, sensor_data):
+    def get_action(self, *args, **kwargs):
         pass
 
     @property

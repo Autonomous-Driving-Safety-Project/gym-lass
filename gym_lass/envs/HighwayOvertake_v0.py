@@ -61,7 +61,7 @@ class HighwayOvertake_v0(gym.Env):
         s, collision, _, info = self.__lass.step(
             {self.__ego.id: a_ego, self.__bumper.id: a_bumper})
         self.__ego.update_state(s[self.__ego.id])
-        self.__bumper.update_state((s[self.__bumper.id]))
+        self.__bumper.update_state(s[self.__bumper.id])
         t = info['t']
 
         # TODO: reward calculation and collision handle
