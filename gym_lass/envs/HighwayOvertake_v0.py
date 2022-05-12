@@ -12,7 +12,7 @@ class HighwayOvertake_v0(gym.Env):
     """Highway overtake scenario based on esmini"""
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, display=False, enable_random=False):
+    def __init__(self, display=False, enable_random=False, record=False):
         super(HighwayOvertake_v0, self).__init__()
         # Define action and observation space
         self.__lass = None
@@ -22,6 +22,7 @@ class HighwayOvertake_v0(gym.Env):
                                             dtype=np.float32)
         self.__xosc_path = os.path.join(Utils.ROOT_PATH, 'resources/xosc/highway_overtake.xosc')
         self.__display = display
+        self.__record = record
         self.__random = enable_random
         self.__vdict = None
         self.__ego = None
@@ -40,7 +41,11 @@ class HighwayOvertake_v0(gym.Env):
             display = 0
         else:
             display = self.__display
-        self.__lass = Lass.Lass(Utils.load_xosc(self.__xosc_path, enable_random=self.__random), display)
+        if self.__record == False:
+            record = 0
+        else:
+            record = 1
+        self.__lass = Lass.Lass(Utils.load_xosc(self.__xosc_path, enable_random=self.__random), display, record)
         self.__vdict = self.__lass.vehicleDict()
         init_state = self.__lass.observe()
 
