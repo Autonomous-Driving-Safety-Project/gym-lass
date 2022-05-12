@@ -31,6 +31,7 @@ class MOBIL(Algorithm):
         self.__p = politeness_factor
         self.__ath = changing_threshold
         self.__bsafe = max_safe_deceleration
+        self.__target_lane = None
 
     @property
     def longitudinal(self):
@@ -78,6 +79,8 @@ class MOBIL(Algorithm):
         :return: 0, steer
         """
         ego_lane = ego_state.lane_id
+        if self.__target_lane is None:
+            self.__target_lane = ego_lane
         ego_lane_width = None
         left_lane = None
         left_lane_width = None
@@ -94,112 +97,122 @@ class MOBIL(Algorithm):
                     right_lane = perception[index + 1]["id"]
                     right_lane_width = perception[index + 1]["width"]
                 break
-        # get left & right lane successor and prior states
-        left_successor = None
-        right_successor = None
-        current_successor = None
-        left_prior = None
-        right_prior = None
-        current_prior = None
-        for obj in full_state:
-            if obj.lane_id == ego_lane and obj.id != ego_state.id and obj.s >= ego_state.s:
-                if current_prior is None or obj.s < current_prior.s:
-                    current_prior = obj
-            if obj.lane_id == ego_lane and obj.id != ego_state.id and obj.s < ego_state.s:
-                if current_successor is None or obj.s > current_successor.s:
-                    current_successor = obj
-            if left_lane is not None:
-                if obj.lane_id == left_lane and obj.s < ego_state.s:
-                    # TODO: handle s decrease case
-                    if left_successor is None or obj.s > left_successor.s:
-                        left_successor = obj
-                if obj.lane_id == left_lane and obj.s >= ego_state.s:
-                    if left_prior is None or obj.s < left_prior.s:
-                        left_prior = obj
-            if right_lane is not None:
-                if obj.lane_id == right_lane and obj.s < ego_state.s:
-                    # TODO: handle s decrease case
-                    if right_successor is None or obj.s > right_successor.s:
-                        right_successor = obj
-                if obj.lane_id == right_lane and obj.s >= ego_state.s:
-                    if right_prior is None or obj.s < right_prior.s:
-                        right_prior = obj
+        if ego_lane == self.__target_lane:
+            # get left & right lane successor and prior states
+            left_successor = None
+            right_successor = None
+            current_successor = None
+            left_prior = None
+            right_prior = None
+            current_prior = None
+            for obj in full_state:
+                if obj.lane_id == ego_lane and obj.id != ego_state.id and obj.s >= ego_state.s:
+                    if current_prior is None or obj.s < current_prior.s:
+                        current_prior = obj
+                if obj.lane_id == ego_lane and obj.id != ego_state.id and obj.s < ego_state.s:
+                    if current_successor is None or obj.s > current_successor.s:
+                        current_successor = obj
+                if left_lane is not None:
+                    if obj.lane_id == left_lane and obj.s < ego_state.s:
+                        # TODO: handle s decrease case
+                        if left_successor is None or obj.s > left_successor.s:
+                            left_successor = obj
+                    if obj.lane_id == left_lane and obj.s >= ego_state.s:
+                        if left_prior is None or obj.s < left_prior.s:
+                            left_prior = obj
+                if right_lane is not None:
+                    if obj.lane_id == right_lane and obj.s < ego_state.s:
+                        # TODO: handle s decrease case
+                        if right_successor is None or obj.s > right_successor.s:
+                            right_successor = obj
+                    if obj.lane_id == right_lane and obj.s >= ego_state.s:
+                        if right_prior is None or obj.s < right_prior.s:
+                            right_prior = obj
 
-        # get acceleration
-        left_successor_acceleration = 0
-        right_successor_acceleration = 0
-        current_successor_acceleration = 0
-        left_successor_acceleration_new = 0
-        right_successor_acceleration_new = 0
-        current_successor_acceleration_new = 0
-        ego_acceleration = 0
-        ego_acceleration_left = 0
-        ego_acceleration_right = 0
-        desired_speed = self.__desired_speed
-        if left_successor is not None:
-            if left_prior is not None:
-                left_successor_acceleration = self._idm_acceleration(desired_speed,
-                                                                     self._get_space(left_successor, left_prior),
-                                                                     left_successor.speed, left_prior.speed)
-            else:
-                left_successor_acceleration = self._idm_free_acceleration(desired_speed, left_successor.speed)
-            left_successor_acceleration_new = self._idm_acceleration(desired_speed,
-                                                                     self._get_space(left_successor, ego_state),
-                                                                     left_successor.speed, ego_state.speed)
-        if right_successor is not None:
-            if right_prior is not None:
-                right_successor_acceleration = self._idm_acceleration(desired_speed,
-                                                                      self._get_space(right_successor, right_prior),
-                                                                      right_successor.speed, right_prior.speed)
-            else:
-                right_successor_acceleration = self._idm_free_acceleration(desired_speed, right_successor.speed)
-            right_successor_acceleration_new = self._idm_acceleration(desired_speed,
-                                                                      self._get_space(right_successor, ego_state),
-                                                                      right_successor.speed, ego_state.speed)
-        if current_successor is not None:
-            current_successor_acceleration = self._idm_acceleration(desired_speed,
-                                                                    self._get_space(current_successor, ego_state),
-                                                                    current_successor.speed, ego_state.speed)
+            # get acceleration
+            left_successor_acceleration = 0
+            right_successor_acceleration = 0
+            current_successor_acceleration = 0
+            left_successor_acceleration_new = 0
+            right_successor_acceleration_new = 0
+            current_successor_acceleration_new = 0
+            ego_acceleration = 0
+            ego_acceleration_left = 0
+            ego_acceleration_right = 0
+            desired_speed = self.__desired_speed
+            if left_successor is not None:
+                if left_prior is not None:
+                    left_successor_acceleration = self._idm_acceleration(desired_speed,
+                                                                         self._get_space(left_successor, left_prior),
+                                                                         left_successor.speed, left_prior.speed)
+                else:
+                    left_successor_acceleration = self._idm_free_acceleration(desired_speed, left_successor.speed)
+                left_successor_acceleration_new = self._idm_acceleration(desired_speed,
+                                                                         self._get_space(left_successor, ego_state),
+                                                                         left_successor.speed, ego_state.speed)
+            if right_successor is not None:
+                if right_prior is not None:
+                    right_successor_acceleration = self._idm_acceleration(desired_speed,
+                                                                          self._get_space(right_successor, right_prior),
+                                                                          right_successor.speed, right_prior.speed)
+                else:
+                    right_successor_acceleration = self._idm_free_acceleration(desired_speed, right_successor.speed)
+                right_successor_acceleration_new = self._idm_acceleration(desired_speed,
+                                                                          self._get_space(right_successor, ego_state),
+                                                                          right_successor.speed, ego_state.speed)
+            if current_successor is not None:
+                current_successor_acceleration = self._idm_acceleration(desired_speed,
+                                                                        self._get_space(current_successor, ego_state),
+                                                                        current_successor.speed, ego_state.speed)
+                if current_prior is not None:
+                    current_successor_acceleration_new = self._idm_acceleration(desired_speed,
+                                                                                self._get_space(current_successor,
+                                                                                                current_prior),
+                                                                                current_successor.speed,
+                                                                                current_prior.speed)
+                else:
+                    current_successor_acceleration_new = self._idm_free_acceleration(desired_speed, current_successor.speed)
+
             if current_prior is not None:
-                current_successor_acceleration_new = self._idm_acceleration(desired_speed,
-                                                                            self._get_space(current_successor,
-                                                                                            current_prior),
-                                                                            current_successor.speed,
-                                                                            current_prior.speed)
+                ego_acceleration = self._idm_acceleration(desired_speed, self._get_space(ego_state, current_prior),
+                                                          ego_state.speed, current_prior.speed)
             else:
-                current_successor_acceleration_new = self._idm_free_acceleration(desired_speed, current_successor.speed)
+                ego_acceleration = self._idm_free_acceleration(desired_speed, ego_state.speed)
 
-        if current_prior is not None:
-            ego_acceleration = self._idm_acceleration(desired_speed, self._get_space(ego_state, current_prior),
-                                                      ego_state.speed, current_prior.speed)
+            if left_prior is not None:
+                ego_acceleration_left = self._idm_acceleration(desired_speed, self._get_space(ego_state, left_prior),
+                                                               ego_state.speed, left_prior.speed)
+            else:
+                ego_acceleration_left = self._idm_free_acceleration(desired_speed, ego_state.speed)
+
+            if right_prior is not None:
+                ego_acceleration_right = self._idm_acceleration(desired_speed, self._get_space(ego_state, right_prior),
+                                                                ego_state.speed, right_prior.speed)
+            else:
+                ego_acceleration_right = self._idm_free_acceleration(desired_speed, ego_state.speed)
+
+            # whether ego can merge left:
+            if left_lane is not None and left_successor_acceleration_new >= -self.__bsafe and (
+                    ego_acceleration_left - ego_acceleration) + self.__p * (
+                    left_successor_acceleration_new - left_successor_acceleration + current_successor_acceleration_new - current_successor_acceleration) > self.__ath:
+                # merge left
+                # print("merge left")
+                self.__target_lane = left_lane
+                return self._get_lks(- ego_state.lane_offset + left_lane_width / 2 + ego_lane_width / 2)
+            # whether ego can merge right:
+            if right_lane is not None and right_successor_acceleration_new >= -self.__bsafe and (
+                    ego_acceleration_right - ego_acceleration) + self.__p * (
+                    right_successor_acceleration_new - right_successor_acceleration + current_successor_acceleration_new - current_successor_acceleration) > self.__ath:
+                # merge right
+                # print("merge right")
+                self.__target_lane = right_lane
+                return self._get_lks(- ego_state.lane_offset - right_lane_width / 2 - ego_lane_width / 2)
+            # keep lane
+            return self._get_lks(- ego_state.lane_offset)
         else:
-            ego_acceleration = self._idm_free_acceleration(desired_speed, ego_state.speed)
-
-        if left_prior is not None:
-            ego_acceleration_left = self._idm_acceleration(desired_speed, self._get_space(ego_state, left_prior),
-                                                           ego_state.speed, left_prior.speed)
-        else:
-            ego_acceleration_left = self._idm_free_acceleration(desired_speed, ego_state.speed)
-
-        if right_prior is not None:
-            ego_acceleration_right = self._idm_acceleration(desired_speed, self._get_space(ego_state, right_prior),
-                                                            ego_state.speed, right_prior.speed)
-        else:
-            ego_acceleration_right = self._idm_free_acceleration(desired_speed, ego_state.speed)
-
-        # whether ego can merge left:
-        if left_lane is not None and left_successor_acceleration_new >= -self.__bsafe and (
-                ego_acceleration_left - ego_acceleration) + self.__p * (
-                left_successor_acceleration_new - left_successor_acceleration + current_successor_acceleration_new - current_successor_acceleration) > self.__ath:
-            # merge left
-            # print("merge left")
-            return self._get_lks(- ego_state.lane_offset + left_lane_width / 2 + ego_lane_width / 2)
-        # whether ego can merge right:
-        if right_lane is not None and right_successor_acceleration_new >= -self.__bsafe and (
-                ego_acceleration_right - ego_acceleration) + self.__p * (
-                right_successor_acceleration_new - right_successor_acceleration + current_successor_acceleration_new - current_successor_acceleration) > self.__ath:
-            # merge right
-            # print("merge right")
-            return self._get_lks(- ego_state.lane_offset - right_lane_width / 2 - ego_lane_width / 2)
-        # keep lane
-        return self._get_lks(- ego_state.lane_offset)
+            if self.__target_lane > ego_lane:
+                # merge left
+                return self._get_lks(- ego_state.lane_offset + left_lane_width / 2.0 + ego_lane_width / 2.0)
+            else:
+                # merge right
+                return self._get_lks(- ego_state.lane_offset - right_lane_width / 2.0 - ego_lane_width / 2.0)
