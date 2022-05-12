@@ -88,6 +88,9 @@ class RampMerge_v1(gym.Env):
         if t >= 10:
             ended = True
             reward -= 10
+
+        # time punishment
+        reward -= 0.01
         
         # reward shaping
         # x_gap = self.__ego.state.s - self.__bumper.state.s
