@@ -9,6 +9,11 @@ register(
 )
 
 register(
+    id='HighwayOvertake-v1',
+    entry_point='gym_lass.envs:HighwayOvertake_v1'
+)
+
+register(
     id='RampMerge-v0',
     entry_point='gym_lass.envs:RampMerge_v0'
 )
