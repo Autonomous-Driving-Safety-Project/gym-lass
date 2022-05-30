@@ -7,6 +7,9 @@ from shapely.geometry import LinearRing
 
 class Utils:
     ROOT_PATH = os.path.join(os.path.dirname(__file__), "..")
+    DT = 0.01
+    MAX_ACCELERATE = 20
+    MAX_DECELERATE = 20
 
     @classmethod
     def load_xosc(cls, path, enable_random=False):

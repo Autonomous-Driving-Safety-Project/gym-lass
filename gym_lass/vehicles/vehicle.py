@@ -1,4 +1,6 @@
 from abc import abstractmethod
+import copy
+from gym_lass.utils.utils import Utils
 
 # class VehicleState:
 #     def __init__(self, x, y, h, speed, s, t, lane_id, lane_offset, road_id, junction_id):
@@ -20,9 +22,12 @@ class Vehicle:
         self._main_controller = None
         self._co_controller = None
         self._state = init_state
+        self._state.accelerate = 0
 
     def update_state(self, state):
+        acc = (state.speed - self._state.speed) / Utils.DT
         self._state = state
+        self._state.accelerate = acc
 
     @abstractmethod
     def get_action(self, *args, **kwargs):
@@ -34,4 +39,5 @@ class Vehicle:
 
     @property
     def state(self):
+        s = self._state
         return self._state

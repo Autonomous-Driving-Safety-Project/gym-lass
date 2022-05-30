@@ -57,6 +57,6 @@ class IDM(Algorithm):
                 prior_heading - self_heading)
             s_star = self.__s0 + self_speed * self.__T + (self_speed * relative_speed) / (
                     2 * math.sqrt(self.__a * self.__b))
-            return self.__a * (1 - math.pow(self_speed / self.__v0, self.__delta) - math.pow(s_star / space, 2)) / 6.0
+            return self.__a * (1 - math.pow(self_speed / self.__v0, self.__delta) - math.pow(s_star / space, 2)) / Utils.MAX_ACCELERATE
         else:
-            return self.__a * (1 - math.pow(self_speed / self.__v0, self.__delta)) / 6.0 # a=6m/s^2 when throttle=1
+            return self.__a * (1 - math.pow(self_speed / self.__v0, self.__delta)) / Utils.MAX_DECELERATE
