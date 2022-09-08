@@ -1,5 +1,6 @@
 from .vehicle import Vehicle
 from gym_lass.algos import IDM, MOBIL
+import sys
 
 
 class CarMOBIL(Vehicle):
@@ -17,6 +18,9 @@ class CarMOBIL(Vehicle):
         throttle, _ = self._main_controller.step(self.state, ideal_sensor_data)
 
         road_sensor = [v for v in sensor_data if v[0] == 'RoadSensor']
+        if road_sensor[0][1] == 0:
+            return None # off-road
+
         _, steer = self._co_controller.step(self.state, road_sensor[0][2][0], full_state)
 
         return [throttle, steer]
