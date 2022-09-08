@@ -1,3 +1,3 @@
 [submodule "gym_lass/lass"]
 	path = gym_lass/lass
-	url = http://git.ustc.edu.cn/navigation_ng/envs/lass.git
+	url = https://github.com/Autonomous-Driving-Safety-Project/LASS.git
