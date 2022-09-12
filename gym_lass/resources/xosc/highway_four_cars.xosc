@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
+    <FileHeader description="asp-gen template" author="Violin Wang" revMajor="1" revMinor="1" date="2022-09-11T16:27:46.359191" />
+    <ParameterDeclarations>
+        <ParameterDeclaration name="CatalogPath" parameterType="string" value="resources/xosc/Catalogs/Vehicles" relativePath="true" />
+        <ParameterDeclaration name="RoadNetworkPath" parameterType="string" value="resources/xodr/highway.xodr" relativePath="true" />
+        <ParameterDeclaration name="exec_time" parameterType="double" value="5" />
+    </ParameterDeclarations>
+    <CatalogLocations>
+        <VehicleCatalog>
+            <Directory path="$CatalogPath" />
+        </VehicleCatalog>
+        <!-- <ControllerCatalog>
+        <Directory path="../xosc/Catalogs/Controllers" />
+    </ControllerCatalog> -->
+    </CatalogLocations>
+    <RoadNetwork>
+        <LogicFile filepath="$RoadNetworkPath" />
+    </RoadNetwork>
+    <Entities>
+        <ScenarioObject name="Ego">
+            <CatalogReference catalogName="VehicleCatalog" entryName="car_red" />
+            <ObjectController>
+                <Controller name="IDMController">
+                    <Properties>
+                        <Property name="esminiController" value="ExternalController" />
+                        <Property name="baseController" value="Naive" />
+                    </Properties>
+                </Controller>
+            </ObjectController>
+            <ObjectSensor>
+                <Sensor name="IdealSensor">
+                    <Properties>
+                        <Property name="sensorType" value="IdealSensor" x="2" y="0" z="1" h="0" rangeNear="0" rangeFar="20" fovH="0.2487" maxObj="10" />
+                    </Properties>
+                </Sensor>
+                <Sensor name="LaneSensor">
+                    <Properties>
+                        <Property name="sensorType" value="LaneSensor" lookaheadDistance="5" lookaheadMode="0" />
+                    </Properties>
+                </Sensor>
+                <Sensor name="RoadSensor">
+                    <Properties>
+                        <Property name="sensorType" value="RoadSensor" />
+                    </Properties>
+                </Sensor>
+            </ObjectSensor>
+        </ScenarioObject>
+        <ScenarioObject name="Car1">
+            <CatalogReference catalogName="VehicleCatalog" entryName="car_white" />
+            <ObjectController>
+                <Controller name="IDMController">
+                    <Properties>
+                        <Property name="esminiController" value="ExternalController" />
+                        <Property name="baseController" value="Naive" />
+                    </Properties>
+                </Controller>
+            </ObjectController>
+            <ObjectSensor>
+                <Sensor name="RoadSensor">
+                    <Properties>
+                        <Property name="sensorType" value="RoadSensor" />
+                    </Properties>
+                </Sensor>
+            </ObjectSensor>
+        </ScenarioObject>
+        <ScenarioObject name="Car2">
+            <CatalogReference catalogName="VehicleCatalog" entryName="car_white" />
+            <ObjectController>
+                <Controller name="IDMController">
+                    <Properties>
+                        <Property name="esminiController" value="ExternalController" />
+                        <Property name="baseController" value="Naive" />
+                    </Properties>
+                </Controller>
+            </ObjectController>
+            <ObjectSensor>
+                <Sensor name="RoadSensor">
+                    <Properties>
+                        <Property name="sensorType" value="RoadSensor" />
+                    </Properties>
+                </Sensor>
+            </ObjectSensor>
+        </ScenarioObject>
+        <ScenarioObject name="Car3">
+            <CatalogReference catalogName="VehicleCatalog" entryName="car_white" />
+            <ObjectController>
+                <Controller name="IDMController">
+                    <Properties>
+                        <Property name="esminiController" value="ExternalController" />
+                        <Property name="baseController" value="Naive" />
+                    </Properties>
+                </Controller>
+            </ObjectController>
+            <ObjectSensor>
+                <Sensor name="RoadSensor">
+                    <Properties>
+                        <Property name="sensorType" value="RoadSensor" />
+                    </Properties>
+                </Sensor>
+            </ObjectSensor>
+        </ScenarioObject>
+    </Entities>
+    <Storyboard>
+        <Init>
+            <Actions>
+                <Private entityRef="Ego">
+                    <PrivateAction>
+                        <TeleportAction>
+                            <Position>
+                                <LanePosition roadId="20" laneId="-2" s="50.0" offset="0.0" />
+                            </Position>
+                        </TeleportAction>
+                    </PrivateAction>
+                    <PrivateAction>
+                        <LongitudinalAction>
+                            <SpeedAction>
+                                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time" />
+                                <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="20" />
+                                </SpeedActionTarget>
+                            </SpeedAction>
+                        </LongitudinalAction>
+                    </PrivateAction>
+                </Private>
+                <Private entityRef="Car1">
+                    <PrivateAction>
+                        <TeleportAction>
+                            <Position>
+                                <LanePosition roadId="20" laneId="-1" s="40.0" offset="0.0" />
+                            </Position>
+                        </TeleportAction>
+                    </PrivateAction>
+                    <PrivateAction>
+                        <LongitudinalAction>
+                            <SpeedAction>
+                                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time" />
+                                <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="20" />
+                                </SpeedActionTarget>
+                            </SpeedAction>
+                        </LongitudinalAction>
+                    </PrivateAction>
+                </Private>
+                <Private entityRef="Car2">
+                    <PrivateAction>
+                        <TeleportAction>
+                            <Position>
+                                <LanePosition roadId="20" laneId="-2" s="70.0" offset="0.0" />
+                            </Position>
+                        </TeleportAction>
+                    </PrivateAction>
+                    <PrivateAction>
+                        <LongitudinalAction>
+                            <SpeedAction>
+                                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time" />
+                                <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="20" />
+                                </SpeedActionTarget>
+                            </SpeedAction>
+                        </LongitudinalAction>
+                    </PrivateAction>
+                </Private>
+                <Private entityRef="Car3">
+                    <PrivateAction>
+                        <TeleportAction>
+                            <Position>
+                                <LanePosition roadId="20" laneId="-1" s="75.0" offset="0.0" />
+                            </Position>
+                        </TeleportAction>
+                    </PrivateAction>
+                    <PrivateAction>
+                        <LongitudinalAction>
+                            <SpeedAction>
+                                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time" />
+                                <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="20" />
+                                </SpeedActionTarget>
+                            </SpeedAction>
+                        </LongitudinalAction>
+                    </PrivateAction>
+                </Private>
+            </Actions>
+        </Init>
+        <Story name="mystory">
+            <ParameterDeclarations />
+            <Act />
+        </Story>
+        <StopTrigger>
+            <ConditionGroup>
+                <Condition name="stop_simulation" delay="1" conditionEdge="rising">
+                    <ByValueCondition>
+                        <SimulationTimeCondition value="$exec_time" rule="greaterThan" />
+                    </ByValueCondition>
+                </Condition>
+            </ConditionGroup>
+        </StopTrigger>
+    </Storyboard>
+</OpenSCENARIO>
