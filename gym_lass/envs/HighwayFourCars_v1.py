@@ -24,7 +24,7 @@ class HighwayFourCars_v1(gym.Env):
             high=np.array(
                 [1000, 1000, 1000, 30, 30, 30, 200, 200, 200, 200, 2 * np.pi, 2 * np.pi, 2 * np.pi, 2 * np.pi, 20]),
             dtype=np.float32)
-        self.__xosc_path = os.path.join(Utils.ROOT_PATH, 'resources/xosc/highway_four_cars.xosc')
+        self.__xosc_path = os.path.join(Utils.ROOT_PATH, 'resources/xosc/highway_four_cars_env1.xosc')
         self.__display = display
         self.__record = record
         self.__random = enable_random
@@ -171,5 +171,6 @@ class HighwayFourCars_v1(gym.Env):
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
-        assert self.__display
-        return
+        # assert self.__display
+        # return
+        pass

@@ -32,3 +32,18 @@ register(
     id='HighwayFourCars-v1',
     entry_point='gym_lass.envs:HighwayFourCars_v1'
 )
+
+register(
+    id='HighwayFourCars-env1-v2',
+    entry_point='gym_lass.envs:HighwayFourCars_env1_v2'
+)
+
+register(
+    id='HighwayFourCars-env2-v2',
+    entry_point='gym_lass.envs:HighwayFourCars_env2_v2'
+)
+
+register(
+    id='HighwayFourCars-env3-v2',
+    entry_point='gym_lass.envs:HighwayFourCars_env3_v2'
+)
