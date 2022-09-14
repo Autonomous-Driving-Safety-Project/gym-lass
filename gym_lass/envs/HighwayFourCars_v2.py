@@ -4,8 +4,8 @@ import gym
 from gym import spaces
 import gym_lass.lass as Lass
 from gym_lass.utils.utils import Utils
-from gym_lass.algos import IDM, LKS_PID
-from gym_lass.vehicles import CarIDM, CarNaive
+from gym_lass.algos import IDM, LKS_PID, MOBIL
+from gym_lass.vehicles import CarMOBIL, CarNaive
 from abc import abstractmethod
 
 class HighwayFourCars_v2(gym.Env):
@@ -80,7 +80,8 @@ class HighwayFourCars_v2(gym.Env):
         follow_id = [k for k, v in self.__vdict.items() if v == "Car2"]
         target_id = [k for k, v in self.__vdict.items() if v == "Car3"]
 
-        self.__ego = CarIDM(ego_id[0], init_state[ego_id[0]], IDM(10, 1, 1.6, 1, 0.2), LKS_PID(0.2, 0, 20))
+        # self.__ego = CarIDM(ego_id[0], init_state[ego_id[0]], IDM(10, 1, 1.6, 1, 0.2), LKS_PID(0.2, 0, 20))
+        self.__ego = CarMOBIL(ego_id[0], init_state[ego_id[0]], IDM(25, 1, 1.5, 3, 1.6), MOBIL(20, 0.2, 0.5))
         self.__leader = CarNaive(leader_id[0], init_state[leader_id[0]])
         self.__follow = CarNaive(follow_id[0], init_state[follow_id[0]])
         self.__target = CarNaive(target_id[0], init_state[target_id[0]])
