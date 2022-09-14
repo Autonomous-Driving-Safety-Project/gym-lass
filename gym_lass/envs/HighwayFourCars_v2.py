@@ -95,7 +95,7 @@ class HighwayFourCars_v2(gym.Env):
     def step(self, action):
         action = np.clip(action, self.action_space.low, self.action_space.high)
         perception = self.__lass.perceive()
-        a_ego = self.__ego.get_action(perception[self.__ego.id])
+        a_ego = self.__ego.get_action(perception[self.__ego.id], self.__lass.observe())
         a_bumper = action.tolist()
         a_leader = a_bumper[0:2]
         a_follow = a_bumper[2:4]
