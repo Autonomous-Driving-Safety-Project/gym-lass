@@ -2,3 +2,6 @@ from gym_lass.envs.HighwayOvertake_v0 import HighwayOvertake_v0
 from gym_lass.envs.HighwayOvertake_v1 import HighwayOvertake_v1
 from gym_lass.envs.RampMerge_v0 import RampMerge_v0
 from gym_lass.envs.RampMerge_v1 import RampMerge_v1
+from gym_lass.envs.HighwayFourCars_v0 import HighwayFourCars_v0
+from gym_lass.envs.HighwayFourCars_v1 import HighwayFourCars_v1
+from gym_lass.envs.HighwayFourCars_v2 import HighwayFourCars_env1_v2, HighwayFourCars_env2_v2, HighwayFourCars_env3_v2
