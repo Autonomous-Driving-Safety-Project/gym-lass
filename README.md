@@ -1,20 +1,19 @@
 # OpenAI Gym API for LASS
 
-## Install
+## Install Guide
 
-1. 安装Boost >= 1.71.0
-
-2. 安装cmake >= 3.16
-
-3. 下载
+1. System requirments: ubuntu 20.04
+2. Install boost >= 1.71.0
+3. Install cmake >= 3.16
+3. Clone the code
 ```shell
-git clone git@git.ustc.edu.cn:navigation_ng/envs/gym-lass.git
+git clone https://github.com/Autonomous-Driving-Safety-Project/gym-lass.git
 cd gym-lass
 git submodule init
 git submodule update
 ```
 
-4. 编译LASS
+4. Compile LASS
 ```shell
 cd gym_lass/lass
 mkdir build && cd build
@@ -22,14 +21,15 @@ cmake ..
 cmake --build . --config Release -- -j8
 ```
 
-5. 作为python模块安装
+5. Install as a python module
 ```shell
 # in project root directory
 pip install -e .
 ```
 
-6. 测试
+6. test
 ```shell
 cd gym_lass/test
 python test.py
 ```
+
